@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Pet from "./Pet";
 import useBreedList from "./useBreedList";
+import Results from "./Results";
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchPrams = () => {
@@ -55,33 +55,24 @@ const SearchPrams = () => {
               return <option key={animal}>{animal}</option>;
             })}
           </select>
-          <label htmlFor="breed">
-            Breed
-            <select
-              id="breed"
-              disabled={!breeds.length} //if breeds.length is 0, then disabled is true
-              value={breed}
-              onChange={(e) => setBreed(e.target.value)}
-            >
-              <option />
-              {breeds.map((breed) => {
-                return <option key={breed}>{breed}</option>;
-              })}
-            </select>
-          </label>
+        </label>
+        <label htmlFor="breed">
+          Breed
+          <select
+            id="breed"
+            disabled={!breeds.length} //if breeds.length is 0, then disabled is true
+            value={breed}
+            onChange={(e) => setBreed(e.target.value)}
+          >
+            <option />
+            {breeds.map((breed) => {
+              return <option key={breed}>{breed}</option>;
+            })}
+          </select>
         </label>
         <button>Submit</button>
       </form>
-      {pets.map((pet) => {
-        return (
-          <Pet
-            name={pet.name}
-            animal={pet.animal}
-            breed={pet.breed}
-            key={pet.id}
-          />
-        );
-      })}
+      <Results pets={pets} />
     </div>
   );
 };
