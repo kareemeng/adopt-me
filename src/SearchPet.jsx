@@ -8,7 +8,8 @@ const SearchPrams = () => {
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
   const [pets, setPets] = useState([]);
-  const [breeds] = useBreedList(animal);
+  const [breeds] = useBreedList(animal); //custom hook using react-query to fetch data
+
   useEffect(() => {
     requestPets();
     //*empty array means only run once
