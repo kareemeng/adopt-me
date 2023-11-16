@@ -13,14 +13,20 @@ class Carousel extends Component {
   };
 
   /*
-  componentDidMount() //?this is a lifecycle method that is called after the component is mounted like useEffect with an empty array
-  componentDidUpdate() //?this is a lifecycle method that is called after the component is updated like useEffect with an array of dependencies
-  shouldComponentUpdate()//? is a lifecycle method that is called before the component is updated not in functional components
-  componentWillUnmount() //?this is a lifecycle method that is called before the component is unmounted like useEffect with a return statement
+  notes:
+    lifecycle methods
+    *componentDidCatch is one of the things that you can not do with functional components
+    componentDidCatch() //?this is a lifecycle method that is called when there is an error in the component not in functional components
+    *shouldComponentUpdate is another thing that you can not do with functional components
+    shouldComponentUpdate()//? is a lifecycle method that is called before the component is updated not in functional components
+    *the rest of the lifecycle methods can be done with useEffect
+    componentDidMount() //?this is a lifecycle method that is called after the component is mounted like useEffect with an empty array
+    componentDidUpdate() //?this is a lifecycle method that is called after the component is updated like useEffect with an array of dependencies
+    componentWillUnmount() //?this is a lifecycle method that is called before the component is unmounted like useEffect with a return statement
   */
   //!used an arrow function because it will bind the this keyword to the class normal functions will not bind the this keyword
   handelIndexClick = (e) => {
-    // + to convert the string to a number as every thing in the dom is a string
+    // need to convert the string to a number as every thing in the dom is a string
     this.setState({ active: +e.target.dataset.index });
   };
 
@@ -35,7 +41,7 @@ class Carousel extends Component {
             // eslint-disable-next-line
             <img
               onClick={this.handelIndexClick}
-              data-index={index}
+              data-index={index} //data-* is slandered way to add custom attributes to html elements
               key={photo}
               src={photo}
               className={index === active ? "active" : ""}
