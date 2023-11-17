@@ -31,6 +31,7 @@ const SearchPrams = () => {
             breed: formData.get("breed") ?? "",
             location: formData.get("location") ?? "",
           };
+          console.log("updated params", obj);
           setRequestParams(obj);
         }}
       >
@@ -42,6 +43,7 @@ const SearchPrams = () => {
           Animal
           <select
             id="animal"
+            name="animal"
             value={animal}
             onChange={(e) => {
               setAnimal(e.target.value);

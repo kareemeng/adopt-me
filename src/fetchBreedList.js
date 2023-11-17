@@ -1,7 +1,7 @@
 const fetchBreedList = async ({ queryKey }) => {
   const animal = queryKey[1];
 
-  if (!animal) throw new Error("animal is required");
+  if (!animal) return []; // return empty array if no animal is selected
 
   const apiRes = await fetch(
     `http://pets-v2.dev-apis.com/breeds?animal=${animal}`
