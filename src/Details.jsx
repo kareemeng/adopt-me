@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import ErrorBoundary from "./ErrorBoundary";
 import Carousel from "./Carousel";
 import fetchPet from "./fetchPet";
 
@@ -38,4 +39,20 @@ const Details = () => {
   );
 };
 
-export default Details;
+/* 
+in order to use the ErrorBoundary, we need to wrap the Details component in the ErrorBoundary component
+we need to do this that way so that all the details component will be wrapped in the ErrorBoundary component
+*/
+
+function DetailsWithErrorBoundary(props) {
+  // add props in case we need to pass props to the Details component later
+
+  //*we can make it reusable by passing the error message as a prop ro the ErrorBoundary component
+  return (
+    <ErrorBoundary>
+      <Details {...props} />
+    </ErrorBoundary>
+  );
+}
+
+export default DetailsWithErrorBoundary;
