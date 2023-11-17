@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
+import adoptedPetsContext from "./adoptedPetContext";
 import useBreedList from "./useBreedList";
 import Results from "./Results";
 import fetchSearch from "./fetchSearch";
@@ -16,6 +17,8 @@ const SearchPrams = () => {
 
   //it is better to use react-query instead of useEffect almost always because of the unpredictable nature of useEffect
   const [breeds] = useBreedList(animal); //custom hook using react-query to fetch data
+
+  const [adoptedPet] = useContext(adoptedPetsContext);
 
   const results = useQuery(["search", requestParams], fetchSearch);
   const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
@@ -35,6 +38,11 @@ const SearchPrams = () => {
           setRequestParams(obj);
         }}
       >
+        {adoptedPet ? (
+          <div className="pet image-container">
+            <img src={adoptedPet.images[0]} alt={adoptedPet.name} />
+          </div>
+        ) : null}
         <label htmlFor="location">
           Location
           <input id="location" name="location" placeholder="Location" />
