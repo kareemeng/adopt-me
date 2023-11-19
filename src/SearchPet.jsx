@@ -24,8 +24,9 @@ const SearchPrams = () => {
   const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
 
   return (
-    <div className="search-params">
+    <div className="my-0 mx-auto w-11/12 ">
       <form
+        className="mb-10 flex flex-col items-center justify-center rounded-lg bg-gray-200 p-10 shadow-lg"
         onSubmit={(e) => {
           e.preventDefault();
           const formData = new FormData(e.target); //?pulls the data from the form
@@ -45,11 +46,18 @@ const SearchPrams = () => {
         ) : null}
         <label htmlFor="location">
           Location
-          <input id="location" name="location" placeholder="Location" />
+          <input
+            id="location"
+            type="text"
+            name="location"
+            placeholder="Location"
+            className="mb-5 block w-60"
+          />
         </label>
         <label htmlFor="animal">
           Animal
           <select
+            className="search-input"
             id="animal"
             name="animal"
             value={animal}
@@ -65,14 +73,21 @@ const SearchPrams = () => {
         </label>
         <label htmlFor="breed">
           Breed
-          <select id="breed" disabled={!breeds.length} name="breed">
+          <select
+            className="search-input grayed-out-disabled"
+            id="breed"
+            disabled={!breeds.length}
+            name="breed"
+          >
             <option />
             {breeds.map((breed) => {
               return <option key={breed}>{breed}</option>;
             })}
           </select>
         </label>
-        <button>Submit</button>
+        <button className=" rounded bg-orange-500 px-6 py-2 text-white hover:opacity-50">
+          Submit
+        </button>
       </form>
       <Results pets={pets} />
     </div>

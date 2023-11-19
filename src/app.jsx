@@ -21,19 +21,28 @@ const App = () => {
   const adoptedPets = useState(null);
   //*BrowserRouter and QueryClientProvider are higher order components that will wrap the entire app but will not render anything
   return (
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AdoptedPetContext.Provider value={adoptedPets}>
-          <header>
-            <Link to="/">Adopt Me!</Link>
-          </header>
-          <Routes>
-            <Route path="/details/:id" element={<Details />} />
-            <Route path="/" element={<SearchPet />} />
-          </Routes>
-        </AdoptedPetContext.Provider>
-      </QueryClientProvider>
-    </BrowserRouter>
+    <dir
+      className="m-0 p-0 "
+      style={{
+        background: "url(https://pets-images.dev-apis.com/pets/wallpaperB.jpg)",
+      }}
+    >
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <AdoptedPetContext.Provider value={adoptedPets}>
+            <header className="mb-10 w-full bg-gradient-to-b from-yellow-400 via-orange-500 to-red-500 p-7 text-center">
+              <Link className="text-6xl text-white hover:text-gray-200" to="/">
+                Adopt Me!
+              </Link>
+            </header>
+            <Routes>
+              <Route path="/details/:id" element={<Details />} />
+              <Route path="/" element={<SearchPet />} />
+            </Routes>
+          </AdoptedPetContext.Provider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </dir>
   );
 };
 const container = document.getElementById("root");
