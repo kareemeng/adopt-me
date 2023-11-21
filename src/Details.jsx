@@ -1,11 +1,14 @@
-import { useState, useContext } from "react";
+import { useState, useContext, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import ErrorBoundary from "./ErrorBoundary";
 import AdoptedPetContext from "./adoptedPetContext";
 import Carousel from "./Carousel";
 import fetchPet from "./fetchPet";
-import Modal from "./Modal";
+
+// do not split any thing for the seek of splitting if u split any thing you may end up slowing you application
+// splitting is for large components that are not used often like about tens of kilobytes to make sense
+const Modal = lazy(() => import("./Modal"));
 
 const Details = () => {
   const [showModal, setShowModal] = useState(false);
