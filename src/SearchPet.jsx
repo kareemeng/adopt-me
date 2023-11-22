@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useDeferredValue, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import adoptedPetsContext from "./adoptedPetContext";
 import useBreedList from "./useBreedList";
@@ -22,6 +22,17 @@ const SearchPrams = () => {
 
   const results = useQuery(["search", requestParams], fetchSearch);
   const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
+  /*
+   if there is a change in the value of pets, then update the value of deferredPets after the render queue is empty 
+   (after all higher priority tasks are done)
+  here we give re-rendering new value of pets a lower priority than the current render
+  */
+  const deferredPets = useDeferredValue(pets);
+  // update the value of renderedPets only when deferredPets changes
+  const renderedPets = useMemo(
+    () => <Results pets={deferredPets} />,
+    [deferredPets]
+  );
 
   return (
     <div className="search-params">
@@ -74,7 +85,7 @@ const SearchPrams = () => {
         </label>
         <button>Submit</button>
       </form>
-      <Results pets={pets} />
+      {renderedPets}
     </div>
   );
 };
