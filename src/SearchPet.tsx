@@ -4,23 +4,24 @@ import adoptedPetsContext from "./adoptedPetContext";
 import useBreedList from "./useBreedList";
 import Results from "./Results";
 import fetchSearch from "./fetchSearch";
-const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
+import { Animal, ISearchParams } from "./APIResponsesTypes";
+const ANIMALS: Animal[] = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchPrams = () => {
   const [requestParams, setRequestParams] = useState({
     location: "",
-    animal: "",
+    animal: "" as Animal,
     breed: "",
   });
 
-  const [animal, setAnimal] = useState("");
-
+  const [animal, setAnimal] = useState("" as Animal);
   //it is better to use react-query instead of useEffect almost always because of the unpredictable nature of useEffect
   const [breeds] = useBreedList(animal); //custom hook using react-query to fetch data
 
   const [adoptedPet] = useContext(adoptedPetsContext);
 
   const results = useQuery(["search", requestParams], fetchSearch);
+
   const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
 
   return (
@@ -28,11 +29,12 @@ const SearchPrams = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const formData = new FormData(e.target); //?pulls the data from the form
-          const obj = {
-            animal: formData.get("animal") ?? "",
-            breed: formData.get("breed") ?? "",
-            location: formData.get("location") ?? "",
+          //use currentTarget instead of target because target because typeScript will complain that target is null
+          const formData = new FormData(e.currentTarget); //?pulls the data from the form
+          const obj: ISearchParams = {
+            animal: (formData.get("animal")?.toString() ?? "") as Animal,
+            breed: formData.get("breed")?.toString() ?? "",
+            location: formData.get("location")?.toString() ?? "",
           };
           console.log("updated params", obj);
           setRequestParams(obj);
@@ -54,7 +56,10 @@ const SearchPrams = () => {
             name="animal"
             value={animal}
             onChange={(e) => {
-              setAnimal(e.target.value);
+              setAnimal(e.target.value as Animal);
+            }}
+            onBlur={(e) => {
+              setAnimal(e.target.value as Animal);
             }}
           >
             <option />

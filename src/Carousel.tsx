@@ -1,9 +1,13 @@
-import { Component } from "react";
+import { Component, MouseEvent } from "react";
 //this is a class component just trying to show the difference between a class component and a functional component for learning purposes
+
+interface IProps {
+  images: string[];
+}
 
 //*any class component needs to extend Component and have a render method
 
-class Carousel extends Component {
+class Carousel extends Component<IProps> {
   state = {
     active: 0,
   };
@@ -25,9 +29,17 @@ class Carousel extends Component {
     componentWillUnmount() //?this is a lifecycle method that is called before the component is unmounted like useEffect with a return statement
   */
   //!used an arrow function because it will bind the this keyword to the class normal functions will not bind the this keyword
-  handelIndexClick = (e) => {
-    // need to convert the string to a number as every thing in the dom is a string
-    this.setState({ active: +e.target.dataset.index });
+  handelIndexClick = (event: MouseEvent<HTMLElement>) => {
+    //tell typescript that the event is a mouse event and that the target is an html element
+
+    if (!(event.target instanceof HTMLElement)) return; //if the target is not an html element then return
+
+    if (!event.target.dataset.index) return; //if there is no data-index then return
+
+    this.setState({
+      // need to a number as every thing in the dom is a string
+      active: +event.target.dataset.index,
+    });
   };
 
   render() {

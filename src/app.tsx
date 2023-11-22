@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SearchPet from "./SearchPet";
 import Details from "./Details";
 import AdoptedPetContext from "./adoptedPetContext";
+import { IPet } from "./APIResponsesTypes";
 
 //React Query stored in a global variable to be used in the entire app ( stored in memory)
 const queryClient = new QueryClient({
@@ -18,7 +19,7 @@ const queryClient = new QueryClient({
 });
 
 const App = () => {
-  const adoptedPets = useState(null);
+  const adoptedPets = useState(null as IPet | null);
   //*BrowserRouter and QueryClientProvider are higher order components that will wrap the entire app but will not render anything
   return (
     <BrowserRouter>
@@ -37,5 +38,6 @@ const App = () => {
   );
 };
 const container = document.getElementById("root");
+if (!container) throw new Error("No root element found");
 const root = createRoot(container);
 root.render(<App />);

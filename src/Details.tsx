@@ -1,22 +1,26 @@
 import { useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import ErrorBoundary from "./ErrorBoundary";
 import AdoptedPetContext from "./adoptedPetContext";
+import ErrorBoundary from "./ErrorBoundary";
 import Carousel from "./Carousel";
 import fetchPet from "./fetchPet";
 import Modal from "./Modal";
+//// import { PetAPIResponse } from "./APIResponsesTypes"
 
 const Details = () => {
+  const { id } = useParams();
+  if (!id) throw new Error("Details component requires an id param");
+  //! do not use PetAPIResponse here, Because wa already set the type in the fetchPet function
+  const results = useQuery(["details", id], fetchPet); //?details is the cache key, run fetchPet if the key is not in the cache
+
+  const [_, setAdoptedPet] = useContext(AdoptedPetContext); //eslint-disable-line @typescript-eslint/no-unused-vars
+
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate(); //responsible for navigation (rerouting)
-  const [_, setAdoptedPet] = useContext(AdoptedPetContext); //eslint-disable-line no-unused-vars
-  const { id } = useParams();
-  const results = useQuery(["details", id], fetchPet); //?details is the cache key, run fetchPet if the key is not in the cache
 
   // results.refetch(); //?refetch will refetch the data from the server
   //?isError is a boolean that will be true if there is an error
-  if (results.isError) return <h2>Error: {results.error.message}</h2>;
   if (results.isLoading) {
     return (
       <div className="loading-pane">
@@ -24,10 +28,10 @@ const Details = () => {
       </div>
     );
   }
-  const pet = results.data.pets[0];
+  const pet = results?.data?.pets[0];
 
   if (!pet) {
-    return <h2>Not Found</h2>;
+    throw new Error("No pet found");
   }
 
   return (
@@ -68,13 +72,13 @@ in order to use the ErrorBoundary, we need to wrap the Details component in the 
 we need to do this that way so that all the details component will be wrapped in the ErrorBoundary component
 */
 
-function DetailsWithErrorBoundary(props) {
+function DetailsWithErrorBoundary() {
   // add props in case we need to pass props to the Details component later
 
   //*we can make it reusable by passing the error message as a prop ro the ErrorBoundary component
   return (
     <ErrorBoundary>
-      <Details {...props} />
+      <Details />
     </ErrorBoundary>
   );
 }

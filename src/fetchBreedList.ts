@@ -1,7 +1,13 @@
-const fetchBreedList = async ({ queryKey }) => {
+import { QueryFunction } from "@tanstack/react-query";
+import { BreedAPIResponse, Animal } from "./APIResponsesTypes";
+
+const fetchBreedList: QueryFunction<
+  BreedAPIResponse,
+  ["breeds", Animal]
+> = async ({ queryKey }) => {
   const animal = queryKey[1];
 
-  if (!animal) return []; // return empty array if no animal is selected
+  ////if (!animal) return []; // no need type is handing it
 
   const apiRes = await fetch(
     `http://pets-v2.dev-apis.com/breeds?animal=${animal}`

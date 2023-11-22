@@ -1,7 +1,11 @@
-import { Component } from "react";
+import { Component, ReactElement, ErrorInfo } from "react";
 import { Link } from "react-router-dom";
 
-class ErrorBoundary extends Component {
+interface IProps {
+  children: ReactElement;
+}
+
+class ErrorBoundary extends Component<IProps> {
   state = { hasError: false };
   //use class component to catch errors because the function component does not have error handling methods
 
@@ -9,7 +13,7 @@ class ErrorBoundary extends Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: ErrorInfo) {
     //TODO: typically log this to an error service like Sentry, TrackJS, New Relic, etc.
     console.error(`ErrorBoundary caught an error`, error, info);
   }
