@@ -1,4 +1,10 @@
-import { useState, useContext, useDeferredValue, useMemo } from "react";
+import {
+  useState,
+  useContext,
+  useDeferredValue,
+  useMemo,
+  useTransition,
+} from "react";
 import { useQuery } from "@tanstack/react-query";
 import adoptedPetsContext from "./adoptedPetContext";
 import useBreedList from "./useBreedList";
@@ -13,12 +19,11 @@ const SearchPrams = () => {
     breed: "",
   });
 
+  const [adoptedPet] = useContext(adoptedPetsContext);
   const [animal, setAnimal] = useState("");
-
   //it is better to use react-query instead of useEffect almost always because of the unpredictable nature of useEffect
   const [breeds] = useBreedList(animal); //custom hook using react-query to fetch data
-
-  const [adoptedPet] = useContext(adoptedPetsContext);
+  const [isPending, startTransition] = useTransition();
 
   const results = useQuery(["search", requestParams], fetchSearch);
   const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
@@ -45,8 +50,10 @@ const SearchPrams = () => {
             breed: formData.get("breed") ?? "",
             location: formData.get("location") ?? "",
           };
-          console.log("updated params", obj);
-          setRequestParams(obj);
+          //?startTransition is used to give the re-rendering of the component a lower priority than the current render
+          startTransition(() => {
+            setRequestParams(obj);
+          });
         }}
       >
         {adoptedPet ? (
@@ -83,7 +90,16 @@ const SearchPrams = () => {
             })}
           </select>
         </label>
-        <button>Submit</button>
+        {
+          //?useTransition returns a boolean value which is true when the transition is in progress
+          isPending ? (
+            <div className="mini loading-pane">
+              <h2 className="loader">🦮</h2>
+            </div>
+          ) : (
+            <button>Submit</button>
+          )
+        }
       </form>
       {renderedPets}
     </div>
