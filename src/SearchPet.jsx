@@ -1,27 +1,30 @@
-import { useState, useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
-import adoptedPetsContext from "./adoptedPetContext";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux"; //allows us to select data from the store
 import useBreedList from "./useBreedList";
+import { useSearchPetsQuery } from "./petApiService";
 import Results from "./Results";
-import fetchSearch from "./fetchSearch";
+import { updateSearchParams } from "./searchParamsSlice";
+
 const ANIMALS = ["bird", "cat", "dog", "rabbit", "reptile"];
 
 const SearchPrams = () => {
-  const [requestParams, setRequestParams] = useState({
-    location: "",
-    animal: "",
-    breed: "",
-  });
-
   const [animal, setAnimal] = useState("");
-
   //it is better to use react-query instead of useEffect almost always because of the unpredictable nature of useEffect
   const [breeds] = useBreedList(animal); //custom hook using react-query to fetch data
+  //this function is subscribed to the store and will be called whenever the store changes
 
-  const [adoptedPet] = useContext(adoptedPetsContext);
+  const requestParams = useSelector((state) => state.searchParams.value);
+  const adoptedPet = useSelector((state) => state.adoptedPet.value); // take all the state from the store and return the adoptedPet slice
+  /**
+   * ?this is bad because it will rerender the entire component whenever the store changes
+   * !this is a lot of un necessary rerendering make sure to pull only the data you need from the store
+   * const store = useSelector((state) => state);
+   * const adoptedPet = store.adoptedPet;
+   */
 
-  const results = useQuery(["search", requestParams], fetchSearch);
-  const pets = results.data?.pets ?? []; //?if results.data is undefined, then pets will be an empty array
+  const dispatch = useDispatch(); //allows us to dispatch actions to the store
+  const { data: results } = useSearchPetsQuery(requestParams); //custom hook using RTK-query to fetch data
+  const pets = results ?? []; //?if results is undefined, then pets will be an empty array
 
   return (
     <div className="search-params">
@@ -34,8 +37,8 @@ const SearchPrams = () => {
             breed: formData.get("breed") ?? "",
             location: formData.get("location") ?? "",
           };
-          console.log("updated params", obj);
-          setRequestParams(obj);
+          // console.log("updated params", obj);
+          dispatch(updateSearchParams(obj));
         }}
       >
         {adoptedPet ? (

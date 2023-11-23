@@ -1,30 +1,27 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
+import { useGetPetQuery } from "./petApiService";
+import { adopt } from "./adoptedPetSlice";
 import ErrorBoundary from "./ErrorBoundary";
-import AdoptedPetContext from "./adoptedPetContext";
 import Carousel from "./Carousel";
-import fetchPet from "./fetchPet";
 import Modal from "./Modal";
 
 const Details = () => {
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate(); //responsible for navigation (rerouting)
-  const [_, setAdoptedPet] = useContext(AdoptedPetContext); //eslint-disable-line no-unused-vars
-  const { id } = useParams();
-  const results = useQuery(["details", id], fetchPet); //?details is the cache key, run fetchPet if the key is not in the cache
 
-  // results.refetch(); //?refetch will refetch the data from the server
-  //?isError is a boolean that will be true if there is an error
-  if (results.isError) return <h2>Error: {results.error.message}</h2>;
-  if (results.isLoading) {
+  const dispatch = useDispatch(); // useDispatch is a hook that will return the dispatch function from the store which we can use to give actions to the store
+
+  const { id } = useParams();
+  const { isLoading, data: pet } = useGetPetQuery(id); //?useGetPetQuery is a hook that will return the data from the server
+  if (isLoading) {
     return (
       <div className="loading-pane">
         <h2 className="loader">🌏</h2>
       </div>
     );
   }
-  const pet = results.data.pets[0];
 
   if (!pet) {
     return <h2>Not Found</h2>;
@@ -47,7 +44,7 @@ const Details = () => {
               <div className="buttons">
                 <button
                   onClick={() => {
-                    setAdoptedPet(pet);
+                    dispatch(adopt(pet)); // makes action object with the pet as the payload and dispatches it to the store
                     navigate("/");
                   }}
                 >
