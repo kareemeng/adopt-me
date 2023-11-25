@@ -35,11 +35,12 @@ class Carousel extends Component {
     const { images } = this.props;
     return (
       <div className="carousel">
-        <img src={images[active]} alt="animal hero" />
+        <img data-testid="hero" src={images[active]} alt="animal hero" />
         <div className="carousel-smaller">
           {images.map((photo, index) => (
             // eslint-disable-next-line
             <img
+              data-testid={`thumbnail-image-${index}`}
               onClick={this.handelIndexClick}
               data-index={index} //data-* is slandered way to add custom attributes to html elements
               key={photo}
